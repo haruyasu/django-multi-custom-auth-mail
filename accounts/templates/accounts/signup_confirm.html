@@ -1,0 +1,110 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<h1 class="title">
+    <span>会員登録</span>
+</h1>
+
+<div class="signup-ck mx-auto text-center">
+    <p class="d-inline-block text-center mb-4">
+        以下の内容でよろしいでしょうか？
+    </p>
+    <table class="signup-ck__table">
+        <tbody>
+            <tr class="d-block d-sm-table-row">
+                <th
+                    class="d-block d-sm-table-cell text-center text-sm-left py-1 py-sm-3 px-4"
+                >
+                    お名前
+                </th>
+                <td
+                    class="d-block d-sm-table-cell text-center text-sm-left py-3 px-4"
+                >
+                    {{ first_name }} {{ last_name }}
+                </td>
+            </tr>
+            <tr class="d-block d-sm-table-row">
+                <th
+                    class="d-block d-sm-table-cell text-center text-sm-left py-1 py-sm-3 px-4"
+                >
+                    住所
+                </th>
+                <td
+                    class="d-block d-sm-table-cell text-center text-sm-left py-3 px-4"
+                >
+                    {{ address }}
+                </td>
+            </tr>
+            <tr class="d-block d-sm-table-row">
+                <th
+                    class="d-block d-sm-table-cell text-center text-sm-left py-1 py-sm-3 px-4"
+                >
+                    メールアドレス
+                </th>
+                <td
+                    class="signup-ck__table--email d-block d-sm-table-cell text-center text-sm-left py-3 px-4 overflow-auto"
+                >
+                    {{ email }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="position-relative text-center">
+        <a
+            class="back-btn d-none d-sm-block btn rounded-pill"
+            href="{% url 'account_signup' %}"
+            ontouchstart=""
+            >戻る</a
+        >
+        <a
+            id="signup_done"
+            class="signup__btn btn rounded-pill"
+            ontouchstart=""
+        >
+            <i class="fas fa-user-plus fa-fw" aria-hidden="true"></i>登録
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const getCookie = (name) => {
+        if (document.cookie && document.cookie !== '') {
+            for (const cookie of document.cookie.split(';')) {
+                const [key, value] = cookie.trim().split('=')
+                if (key === name) {
+                    return decodeURIComponent(value)
+                }
+            }
+        }
+    }
+    const csrftoken = getCookie('csrftoken')
+
+    document.getElementById('signup_done').addEventListener('click', () => {
+        const url = '{% url "account_signup_done" %}'
+        const body = new URLSearchParams()
+        body.append('first_name', '{{ first_name }}')
+        body.append('last_name', '{{ last_name }}')
+        body.append('email', '{{ email }}')
+        body.append('address', '{{ address }}')
+        body.append('password', '{{ password }}')
+
+        fetch(url, {
+            method: 'POST',
+            body: body,
+            headers: {
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=utf-8',
+                'X-CSRFToken': csrftoken,
+            },
+        })
+            .then((response) => {
+                return response.json()
+            })
+            .then((response) => {
+                window.location.href = '{% url "account_signup_done" %}'
+            })
+    })
+</script>
+{% endblock %}

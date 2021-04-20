@@ -1,0 +1,27 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="title">
+    <span>会員登録</span>
+</h1>
+
+<div class="mx-auto text-center">
+    <p class="done-text">本登録が完了しました</p>
+    <br />
+    <p class="d-inline-block text-left">
+        ご登録されたメールアドレスとパスワードでログインしてください。
+    </p>
+</div>
+
+<div class="text-center">
+    <a
+        class="signup__btn btn rounded-pill"
+        href="{% url 'account_login' %}"
+        ontouchstart=""
+    >
+        ログイン画面へ
+    </a>
+</div>
+{% endblock %}
