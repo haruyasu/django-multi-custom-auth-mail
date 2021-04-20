@@ -10,9 +10,34 @@
             {% csrf_token %}
             <div class="form-label-group">
                 {% render_field form.login class="form-control" placeholder="メールアドレス" %}
+                {% for field in form %}
+                    <p class="error-msg email_error text-left d-none m-0">
+                        {% for error in field.errors %}
+                            ※{{ error }}<br>
+                        {% endfor %}
+                    </p>
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <p class="error-msg email_error text-left d-none m-0">
+                        ※{{ error }}
+                    </p>
+                {% endfor %}
+
             </div>
             <div class="form-label-group">
                 {% render_field form.password class="form-control" placeholder="パスワード" %}
+                {% for field in form %}
+                <p class="error-msg pw_error text-left d-none m-0">
+                    {% for error in field.errors %}
+                            ※{{ error }}<br>
+                            {% endfor %}
+                    </p>
+                    {% endfor %}
+                {% for error in form.non_field_errors %}
+                <p class="error-msg pw_error text-left d-none m-0">
+                    ※{{ error }}
+                </p>
+                {% endfor %}
             </div>
             <div class="button mx-auto">
                 <button class="btn btn-lg btn-primary btn-block mx-auto" type="submit">ログイン</button>
@@ -21,4 +46,39 @@
     </div>
 </div>
 
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    'use strict';
+
+    // エラーメッセージ（メールアドレス）
+    const email_error = document.querySelectorAll('.email_error');
+    const login = document.getElementById('id_login');
+    for ( let i = 0; i < email_error.length; i++ ) {
+        if ( email_error[i].textContent.match(/メールアドレス/) ) {
+            email_error[i].className = 'error-msg m-0 d-block text-left';
+            login.className = 'form-control form-error';
+        }
+        login.addEventListener('click', () => {
+            email_error[i].className = 'error-msg email_error d-none m-0'
+            login.className = 'form-control'
+        })
+    }
+
+    // エラーメッセージ（パスワード）
+    const pw_error = document.querySelectorAll('.pw_error');
+    const pw = document.getElementById('id_password');
+    for ( let k = 0; k < pw_error.length; k++ ) {
+        if ( pw_error[k].textContent.match(/パスワード/) ) {
+            pw_error[k].className = 'error-msg m-0 d-block text-left';
+            pw.className = 'form-control form-error';
+        }
+        pw.addEventListener('click', () => {
+            pw_error[k].className = 'error-msg pw_error d-none text-left m-0'
+            pw.className = 'form-control'
+        })
+    }
+</script>
 {% endblock %}
